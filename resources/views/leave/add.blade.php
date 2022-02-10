@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <login-page></login-page>
+<take-leaves></take-leaves>
 @endsection

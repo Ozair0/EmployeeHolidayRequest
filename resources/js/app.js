@@ -20,6 +20,10 @@ window.Vue = require('vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('home-page', require('./components/home-page.vue').default);
+Vue.component('login-page', require('./components/login-page.vue').default);
+Vue.component('nav-bar', require('./components/nav-bar.vue').default);
+Vue.component("register-page", require("./components/register-page.vue").default);
+Vue.component("take-leaves", require("./components/take-leaves.vue").default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

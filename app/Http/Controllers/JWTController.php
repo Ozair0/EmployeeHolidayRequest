@@ -106,6 +106,27 @@ class JWTController extends Controller
     }
 
     /**
+     * Get user profile.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function profile_by_id(Request $request)
+    {
+        if ($request->user()->type != "mang") {
+            return response()->json("{error: 'Not Allowed'}", 405);
+        }
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        $user = User::select('name')->where('id', $request->user_id)->get();
+        return response()->json($user[0]);
+    }
+
+    /**
      * Get the token array structure.
      *
      * @param  string $token

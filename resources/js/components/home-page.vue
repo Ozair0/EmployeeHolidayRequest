@@ -8,7 +8,9 @@
                         <a
                             v-if="loggedIn"
                             href="/take_leave"
-                            :class="`btn btn-primary${isAdmin ? ' disabled':''}`"
+                            :class="`btn btn-primary${
+                                isAdmin ? ' disabled' : ''
+                            }`"
                         >
                             Take a leave
                         </a>
@@ -19,10 +21,12 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th v-if="isAdmin">User Name</th>
                                     <th scope="col">Reason</th>
                                     <th scope="col">From</th>
                                     <th scope="col">To</th>
-                                    <th scope="col">Statue</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" v-if="isAdmin">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -31,6 +35,7 @@
                                     :key="item.id"
                                 >
                                     <th scope="row">{{ index + 1 }}</th>
+                                    <td v-if="isAdmin">{{ item.user.name }}</td>
                                     <td>{{ item.reason }}</td>
                                     <td>{{ item.from }}</td>
                                     <td>{{ item.to }}</td>
@@ -48,6 +53,14 @@
                                                     ? "Approved"
                                                     : "Pending"
                                             }}
+                                        </button>
+                                    </td>
+                                    <td v-if="isAdmin">
+                                        <button
+                                            @click.prevent="approve(item.id)"
+                                            class="btn btn-primary"
+                                        >
+                                            Approve
                                         </button>
                                     </td>
                                 </tr>
@@ -85,23 +98,62 @@ export default {
             .then((res) => {
                 if (res.data.type.trim() == "mang") this.isAdmin = true;
                 localStorage.setItem("type", "mang");
+            })
+            .then(() => {
+                if (this.isAdmin) {
+                    axios
+                        .get("/api/leave/get_all", {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem(
+                                    "token"
+                                )}`,
+                            },
+                        })
+                        .then((res) => {
+                            this.leaves = res.data;
+                        });
+                } else {
+                    axios
+                        .get("/api/leave/get", {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem(
+                                    "token"
+                                )}`,
+                            },
+                        })
+                        .then((res) => {
+                            this.leaves = res.data;
+                        });
+                }
             });
-    },
-    created() {
         this.loggedIn = !(
             localStorage.getItem("token") === "" ||
             localStorage.getItem("token") === undefined ||
             localStorage.getItem("token") === "null"
         );
-        axios
-            .get("/api/leave/get", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            })
-            .then((res) => {
-                this.leaves = res.data;
-            });
+    },
+
+    methods: {
+        approve(id) {
+            axios
+                .put(
+                    "/api/leave/update",
+                    {
+                        approved: 1,
+                        leave_id: id,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "token"
+                            )}`,
+                        },
+                    }
+                )
+                .then((res) => {
+                    window.location.href = "/";
+                });
+        },
     },
 };
 </script>

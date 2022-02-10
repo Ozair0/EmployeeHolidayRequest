@@ -5058,6 +5058,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5076,19 +5089,40 @@ __webpack_require__.r(__webpack_exports__);
     }).then(function (res) {
       if (res.data.type.trim() == "mang") _this.isAdmin = true;
       localStorage.setItem("type", "mang");
-    });
-  },
-  created: function created() {
-    var _this2 = this;
-
-    this.loggedIn = !(localStorage.getItem("token") === "" || localStorage.getItem("token") === undefined || localStorage.getItem("token") === "null");
-    axios.get("/api/leave/get", {
-      headers: {
-        Authorization: "Bearer ".concat(localStorage.getItem("token"))
+    }).then(function () {
+      if (_this.isAdmin) {
+        axios.get("/api/leave/get_all", {
+          headers: {
+            Authorization: "Bearer ".concat(localStorage.getItem("token"))
+          }
+        }).then(function (res) {
+          _this.leaves = res.data;
+        });
+      } else {
+        axios.get("/api/leave/get", {
+          headers: {
+            Authorization: "Bearer ".concat(localStorage.getItem("token"))
+          }
+        }).then(function (res) {
+          _this.leaves = res.data;
+        });
       }
-    }).then(function (res) {
-      _this2.leaves = res.data;
     });
+    this.loggedIn = !(localStorage.getItem("token") === "" || localStorage.getItem("token") === undefined || localStorage.getItem("token") === "null");
+  },
+  methods: {
+    approve: function approve(id) {
+      axios.put("/api/leave/update", {
+        approved: 1,
+        leave_id: id
+      }, {
+        headers: {
+          Authorization: "Bearer ".concat(localStorage.getItem("token"))
+        }
+      }).then(function (res) {
+        window.location.href = "/";
+      });
+    }
   }
 });
 
@@ -5572,6 +5606,8 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (res) {
         window.location.href = "/";
+      })["catch"](function (e) {
+        alert(e.response.data.masg);
       });
     }
   }
@@ -28508,7 +28544,25 @@ var render = function () {
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("table", { staticClass: "table" }, [
-              _vm._m(0),
+              _c("thead", [
+                _c("tr", [
+                  _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+                  _vm._v(" "),
+                  _vm.isAdmin ? _c("th", [_vm._v("User Name")]) : _vm._e(),
+                  _vm._v(" "),
+                  _c("th", { attrs: { scope: "col" } }, [_vm._v("Reason")]),
+                  _vm._v(" "),
+                  _c("th", { attrs: { scope: "col" } }, [_vm._v("From")]),
+                  _vm._v(" "),
+                  _c("th", { attrs: { scope: "col" } }, [_vm._v("To")]),
+                  _vm._v(" "),
+                  _c("th", { attrs: { scope: "col" } }, [_vm._v("Status")]),
+                  _vm._v(" "),
+                  _vm.isAdmin
+                    ? _c("th", { attrs: { scope: "col" } }, [_vm._v("Action")])
+                    : _vm._e(),
+                ]),
+              ]),
               _vm._v(" "),
               _c(
                 "tbody",
@@ -28517,6 +28571,10 @@ var render = function () {
                     _c("th", { attrs: { scope: "row" } }, [
                       _vm._v(_vm._s(index + 1)),
                     ]),
+                    _vm._v(" "),
+                    _vm.isAdmin
+                      ? _c("td", [_vm._v(_vm._s(item.user.name))])
+                      : _vm._e(),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(item.reason))]),
                     _vm._v(" "),
@@ -28544,6 +28602,28 @@ var render = function () {
                         ]
                       ),
                     ]),
+                    _vm._v(" "),
+                    _vm.isAdmin
+                      ? _c("td", [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-primary",
+                              on: {
+                                click: function ($event) {
+                                  $event.preventDefault()
+                                  return _vm.approve(item.id)
+                                },
+                              },
+                            },
+                            [
+                              _vm._v(
+                                "\n                                        Approve\n                                    "
+                              ),
+                            ]
+                          ),
+                        ])
+                      : _vm._e(),
                   ])
                 }),
                 0
@@ -28555,26 +28635,7 @@ var render = function () {
     ]),
   ])
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Reason")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("From")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("To")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Statue")]),
-      ]),
-    ])
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

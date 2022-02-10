@@ -66,7 +66,7 @@ class LeavesController extends Controller
             }
         }
         if ($workingDays > 25) {
-            return response()->json("{error: 'you can't take more then 25 days leave in a year!'}", 400);
+            return response()->json(['masg' => "you can't take more then 25 days leave in a year!"], 400);
         }
 
         $leave = new Leaves();
@@ -90,7 +90,7 @@ class LeavesController extends Controller
         if ($request->user()->type != "mang") {
             return response()->json("{error: 'Not Allowed'}", 405);
         }
-        $leaves = Leaves::get();
+        $leaves = Leaves::with('user')->get();
         return response()->json($leaves);
     }
 
@@ -106,14 +106,14 @@ class LeavesController extends Controller
     }
 
     /**
-     * Get all users leaves.
+     * Update users leaves by leave id.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function update_leave(Request $request)
     {
         if ($request->user()->type != "mang") {
-            return response()->json("{error: 'Not Allowed'}", 405);
+            return response()->json(['masg' => 'Not Allowed'], 405);
         }
         $validator = Validator::make($request->all(), [
             'approved' => 'required|boolean',
@@ -125,10 +125,6 @@ class LeavesController extends Controller
         }
         $leave = Leaves::find($request->leave_id);
         $leave->is_approved = $request->approved;
-        // $leave->reason = $request->get('reason');
-        // $leave->to = $request->get('to');
-        // $leave->user()->associate($request->user());
-        // $leaves = Leaves::get();
         $leave->update();
         return response()->json($leave);
     }

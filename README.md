@@ -20,8 +20,19 @@
 #### --STEP 4: install NPM dependencies
 <code>npm install</code>
 
+#### --STEP 5: generate app secret code
+
+<code>php artisan key:generate</code>
+
 #### --STEP 5: add jwt secret code to .env file
 <code>php artisan jwt:secret</code>
+
+#### --STEP 6: seed database (optional)
+<code>php artisan db:seed</code>
+
+#### Manger Account
+#### Default manager email is "ozairfarahi6@gmail.com" and password:  "password"
+
 
 
 ## -- Run (Dev)--

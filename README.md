@@ -24,10 +24,10 @@
 
 <code>php artisan key:generate</code>
 
-#### --STEP 5: add jwt secret code to .env file
+#### --STEP 6: add jwt secret code to .env file
 <code>php artisan jwt:secret</code>
 
-#### --STEP 6: seed database (optional)
+#### --STEP 7: seed database (optional)
 <code>php artisan db:seed</code>
 
 #### Manger Account

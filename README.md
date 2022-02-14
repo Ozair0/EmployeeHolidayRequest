@@ -20,6 +20,9 @@
 #### --STEP 4: install NPM dependencies
 <code>npm install</code>
 
+#### --STEP 5: add jwt secret code to .env file
+<code>php artisan jwt:secret</code>
+
 
 ## -- Run (Dev)--
 #### --STEP 1: first 'run npm dev' for front-end
